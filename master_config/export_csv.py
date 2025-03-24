@@ -68,23 +68,15 @@ class EmployeeExportAPIView(APIView):
     @method_decorator(cache_page(60 * 5))
     def get(self, request, format=None):
         queryset = self.get_queryset(request)
+        pseudo_buffer = Echo()
+        writer = csv.writer(pseudo_buffer)
         
-        export_format = request.query_params.get('export', None)
+        response = StreamingHttpResponse(
+            (writer.writerow(row) for row in self.generate_rows(queryset)),
+            content_type="text/csv"
+        )
         
-        if export_format == 'csv':
-            pseudo_buffer = Echo()
-            writer = csv.writer(pseudo_buffer)
-            
-            response = StreamingHttpResponse(
-                (writer.writerow(row) for row in self.generate_rows(queryset)),
-                content_type="text/csv"
-            )
-            
-            filename = f"employees_export_{timezone.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            response['Content-Disposition'] = f'attachment; filename="{filename}"'
-            
-            return response
+        filename = f"employees_export_{timezone.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
         
-        return Response({
-            'error': 'Export format not specified or not supported. Use ?export=csv'
-        }, status=400)
+        return response
