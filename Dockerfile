@@ -28,4 +28,4 @@ COPY . .
 EXPOSE 8000
 
 # Start Django application
-CMD ["gunicorn", "lumendash.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "data_handler_pro.wsgi:application", "--bind", "0.0.0.0:8000"]
