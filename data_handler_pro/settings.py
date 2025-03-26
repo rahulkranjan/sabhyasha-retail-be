@@ -141,14 +141,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:80',
     'http://localhost:3000', 
-    'http://localhost:3001'
+    'http://localhost:3001',
+    'https://web-production-7d88.up.railway.app'
 ]
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'https://localhost:3000',
     'https://localhost:3001',
-    'http://localhost:3001'
+    'http://localhost:3001',
+    'https://web-production-7d88.up.railway.app'
 
 
 ]
