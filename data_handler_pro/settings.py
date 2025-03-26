@@ -144,7 +144,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3001',
     'https://web-production-7d88.up.railway.app',
     'https://nextjs-git-main-rahuls-projects-5b993472.vercel.app',
-    'https://nextjs-nu-gray.vercel.app'
+    'https://nextjs-nu-gray.vercel.app',
+    'https://employee-management-11.netlify.app'
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -154,8 +155,8 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3001',
     'https://web-production-7d88.up.railway.app',
     'https://nextjs-git-main-rahuls-projects-5b993472.vercel.app',
-    'https://nextjs-nu-gray.vercel.app'
-
+    'https://nextjs-nu-gray.vercel.app',
+    'https://employee-management-11.netlify.app'
 
 ]
 
