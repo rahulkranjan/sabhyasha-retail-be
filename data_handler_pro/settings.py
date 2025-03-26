@@ -154,3 +154,16 @@ CORS_ORIGIN_WHITELIST = [
 
 
 ]
+
+
+REDIS_CRED = os.getenv('REDIS_CRED')
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_CRED,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

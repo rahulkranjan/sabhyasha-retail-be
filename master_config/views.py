@@ -5,9 +5,9 @@ from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q, F
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+from django.conf import settings
 from .models import Department, Employee, Position
-from .serializers import EmployeeSerializer
-from rest_framework.parsers import MultiPartParser, FormParser
 
 class CustomEmployeePagination(PageNumberPagination):
     page_size = 20
@@ -32,13 +32,18 @@ class EmployeeListAPIView(APIView):
     
     @method_decorator(cache_page(60 * 15))
     def get(self, request):
+        cache_key = f"employee_list_{request.query_params.urlencode()}_page_{request.GET.get('page', 1)}"
+        
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            return Response(cached_data)
+        
         search_query = request.query_params.get('search', '')
         start_date = request.query_params.get('start_date', None)
         end_date = request.query_params.get('end_date', None)
         department_id = request.query_params.get('department', None)
         position_id = request.query_params.get('position', None)
         
-        # Start with a values query to get exactly the fields we need
         queryset = Employee.objects.select_related('department', 'position').values(
             'id', 'first_name', 'last_name', 'email', 'date_of_joining','phone_number','salary',
             department_name=F('department__name'),
@@ -65,4 +70,8 @@ class EmployeeListAPIView(APIView):
         queryset = queryset.order_by('-date_of_joining')
         
         paginator = self.pagination_class()
-        return paginator.get_paginated_response(paginator.paginate_queryset(queryset, request))
+        response_data = paginator.get_paginated_response(paginator.paginate_queryset(queryset, request)).data
+        
+        cache.set(cache_key, response_data, 60 * 15)
+        
+        return Response(response_data)
